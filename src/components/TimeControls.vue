@@ -32,7 +32,10 @@
             <AudioControls />
             <div class="audioTracks">
 
-                <AudioTrack />
+                <AudioTrack
+                        v-bind:currentMilliseconds="currentMilliseconds"
+                        v-bind:isRunning="isRunning"
+                />
             </div>
         </div>
     </div>
@@ -62,7 +65,7 @@
         },
         watch: {
             currentMilliseconds: function(newVal, oldVal){
-                console.log('Prop changed: ', newVal, ' | was: ', oldVal);
+                // console.log('Prop changed: ', newVal, ' | was: ', oldVal);
                 let slider = document.querySelector('.slider');
                 slider.style.left = (newVal/100) + 'px';
             },

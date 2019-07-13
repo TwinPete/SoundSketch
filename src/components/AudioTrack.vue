@@ -1,7 +1,12 @@
 <template>
     <div class="audioTrack"
     >
-
+        <AudioClip
+                v-bind:key="clip.id" v-for="clip in clips"
+                v-bind:clip="clip"
+                v-bind:currentMilliseconds="currentMilliseconds"
+                v-bind:isRunning="isRunning"
+        />
     </div>
 </template>
 
@@ -10,7 +15,10 @@
 
     export default {
         name: "AudioTrack",
-        props: ['value', 'isRunning'],
+        components: {
+          AudioClip
+        },
+        props: ['currentMilliseconds', 'isRunning'],
         data () {
             return {
                 clips: [
@@ -18,7 +26,7 @@
                         id: 'nana',
                         waveColor: '#5290db',
                         progressColor: '#7eb5f1',
-                        backgroundColor: 'audioSnippetBlue',
+                        backgroundColor: 'audioClipBlue',
                         startPos: 0,
                         endPos: 0,
                         duration: 0,
