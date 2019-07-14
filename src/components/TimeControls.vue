@@ -2,10 +2,10 @@
     <div class="timeControls">
         <div class="watch">
             <div class="watchControls">
-                <div class="play" @click="startWatch"></div>
-                <div class="pause" @click="pauseWatch"></div>
-                <div class="restart"></div>
-                <div class="record"></div>
+                <div class="play" @click="startWatch"><font-awesome-icon icon="play" /></div>
+                <div class="pause" @click="pauseWatch"><font-awesome-icon icon="pause" /></div>
+                <div class="restart"><font-awesome-icon icon="stop" /></div>
+                <div class="record"><font-awesome-icon icon="microphone" /></div>
                 <div class="led">
                     <div class="light" v-bind:class="{lightOn: isRunning}"></div>
                 </div>
@@ -191,12 +191,16 @@
         background-color: #555;
         border-right: solid 1px #494949;
         border-radius: 1px;
+        font-size: 2rem;
+        color: #b8b8b8;
+        cursor: pointer;
     }
 
     .led{
         width: 24px!important;
         height: 24px!important;
         padding: 8px!important;
+        cursor: default!important;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -210,7 +214,7 @@
     }
     .lightOn{
         background-color: #cd2b29;
-        background-color: #43cd62;
+        background-color: #17cd77;
     }
 
     .display{
