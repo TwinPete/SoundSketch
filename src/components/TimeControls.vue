@@ -34,7 +34,9 @@
 
                 <AudioTrack
                         v-bind:currentMilliseconds="currentMilliseconds"
+                        v-bind:currentSeconds="currentSeconds"
                         v-bind:isRunning="isRunning"
+                        v-bind:isDragging="isDragging"
                 />
             </div>
         </div>
@@ -57,6 +59,7 @@
                 isDragging: false,
                 isRunning: false,
                 currentMilliseconds: 0,
+                currentSeconds: 0,
                 watch: '00:00:00:00',
                 is: []
 
@@ -87,6 +90,7 @@
             slide(event){
                 if(this.isDragging){
                     console.log(event.clientX - 422);
+                    this.currentSeconds = event.clientX -422;
                     event.preventDefault();
 
                     let slider = document.querySelector('.slider');

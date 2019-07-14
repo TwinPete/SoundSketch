@@ -5,7 +5,9 @@
                 v-bind:key="clip.id" v-for="clip in clips"
                 v-bind:clip="clip"
                 v-bind:currentMilliseconds="currentMilliseconds"
+                v-bind:currentSeconds="currentSeconds"
                 v-bind:isRunning="isRunning"
+                v-bind:isDragging="isDragging"
         />
     </div>
 </template>
@@ -18,7 +20,7 @@
         components: {
           AudioClip
         },
-        props: ['currentMilliseconds', 'isRunning'],
+        props: ['currentMilliseconds', 'currentSeconds', 'isRunning', 'isDragging'],
         data () {
             return {
                 clips: [
@@ -27,6 +29,7 @@
                         waveColor: '#5290db',
                         progressColor: '#7eb5f1',
                         backgroundColor: 'audioClipBlue',
+                        isPlaying: false,
                         startPos: 0,
                         endPos: 0,
                         duration: 0,
