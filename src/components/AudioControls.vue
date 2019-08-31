@@ -1,15 +1,20 @@
 <template>
     <div class="audio-track__controls">
-        <div class="control"></div>
-        <div class="control"></div>
-        <div class="control"></div>
+        <div class="control"
+             v-for="track in tracks" v-bind:key="track.id"
+             @click="$emit('mute', track.id)"
+        >
+            <div class="mute"
+
+            ></div>
+        </div>
     </div>
 </template>
 
 <script>
     export default {
         name: "AudioControls",
-
+        props: ['tracks']
 
     }
 </script>
@@ -34,6 +39,11 @@
         border-bottom: solid 1px #2a2a2a;
         border-right: solid 1px #2a2a2a;
         border-radius: 2px;
+    }
+
+    .mute{
+        width: 100%;
+        height: 100%;
     }
 
 

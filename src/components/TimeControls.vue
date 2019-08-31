@@ -29,10 +29,15 @@
                     </div>
                 </div>
             </div>
-            <AudioControls />
+            <AudioControls
+                    v-bind:tracks="tracks"
+                    v-on:mute="$emit('mute', $event.target.value)"
+            />
             <div class="audioTracks">
 
                 <AudioTrack
+                        v-for="track in tracks" v-bind:key="track.id"
+                        v-bind:track="track"
                         v-bind:currentMilliseconds="currentMilliseconds"
                         v-bind:currentSeconds="currentSeconds"
                         v-bind:isRunning="isRunning"
@@ -53,6 +58,7 @@
             AudioTrack,
             AudioControls
         },
+        props: ['tracks'],
         data () {
             return {
 
@@ -79,17 +85,17 @@
                 this.isDragging = true;
                 let slider = document.querySelector('.slider');
                 slider.style.cursor = 'grabbing';
-                console.log('drag-start');
+                // console.log('drag-start');
             },
             dragEnd(){
                 this.isDragging = false;
                 let slider = document.querySelector('.slider');
 
-                console.log('drag-end');
+                // console.log('drag-end');
             },
             slide(event){
                 if(this.isDragging){
-                    console.log(event.clientX - 422);
+                    // console.log(event.clientX - 422);
                     this.currentSeconds = event.clientX -422;
                     event.preventDefault();
 
@@ -120,9 +126,9 @@
                 return String(time);
             },
             setWatch(){
-                console.log('milliseconds: ' + this.value);
+                // console.log('milliseconds: ' + this.value);
 
-                console.log('time: ' + this.msToTime(this.value));
+                // console.log('time: ' + this.msToTime(this.value));
                 this.watch = this.msToTime(this.value);
             },
             startWatch(){
@@ -140,12 +146,12 @@
             startInterval(id){
 
 
-                console.log(this.isRunning);
+                // console.log(this.isRunning);
 
                 if(this.isRunning == false){
-                    console.log('watch finished');
+                    // console.log('watch finished');
                     clearInterval(id);
-                    console.log(this.currentMilliseconds);
+                    // console.log(this.currentMilliseconds);
                     this.isRunning = false;
                 }
 
@@ -235,6 +241,7 @@
         display: flex;
         flex-direction: column;
         height: 100%;
+        overflow-x: scroll;
     }
     .frame{
         width: 100%;
@@ -269,6 +276,7 @@
         transform: translateX(-50%);
         left: 50%;
         border-radius: 1px;
+        border-bottom: solid 1px #454545;
         background-color: #555;
         cursor: grab;
         z-index: 100;
@@ -305,7 +313,7 @@
         left: 221px;
         top: 42px;
         width: 100%;
-        height: auto;
+        height: 70px;
     }
 
 </style>

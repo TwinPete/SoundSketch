@@ -20,21 +20,34 @@
         components: {
           AudioClip
         },
-        props: ['currentMilliseconds', 'currentSeconds', 'isRunning', 'isDragging'],
+        props: ['currentMilliseconds', 'currentSeconds', 'isRunning', 'isDragging', 'track'],
         data () {
             return {
                 clips: [
-                    {
-                        id: 'nana',
-                        waveColor: '#5290db',
-                        progressColor: '#7eb5f1',
-                        backgroundColor: 'audioClipBlue',
-                        isPlaying: false,
-                        startPos: 0,
-                        endPos: 0,
-                        duration: 0,
-                        isDragged: false,
-                    }
+                    // {
+                    //     id: 'nana',
+                    //     waveColor: '#5290db',
+                    //     progressColor: '#7eb5f1',
+                    //     backgroundColor: 'audioClipBlue',
+                    //     isPlaying: false,
+                    //     startPos: 0,
+                    //     endPos: 0,
+                    //     duration: 0,
+                    //     isDragged: false,
+                    //     offsetLeft: 100
+                    // },
+                    // {
+                    //     id: 'nene',
+                    //     waveColor: '#5290db',
+                    //     progressColor: '#7eb5f1',
+                    //     backgroundColor: 'audioClipBlue',
+                    //     isPlaying: false,
+                    //     startPos: 0,
+                    //     endPos: 0,
+                    //     duration: 0,
+                    //     isDragged: false,
+                    //     offsetLeft: 200
+                    // }
                 ]
             }
         },
@@ -42,7 +55,38 @@
 
         },
         mounted() {
+            let clip_1 = {
+                id: 'nana',
+                waveColor: '#5290db',
+                progressColor: '#7eb5f1',
+                backgroundColor: 'audioClipBlue',
+                isPlaying: false,
+                startPos: 0,
+                endPos: 0,
+                duration: 0,
+                isDragged: false,
+                offsetLeft: 100
+            }
+            let clip_2 = {
+                id: 'nena',
+                waveColor: '#be635d',
+                progressColor: '#d4958c',
+                backgroundColor: 'audioClipRed',
+                isPlaying: false,
+                startPos: 0,
+                endPos: 0,
+                duration: 0,
+                isDragged: false,
+                offsetLeft: 200
+            }
 
+            console.log(this.track);
+
+            if(this.track.id == 0){
+                this.clips.push(clip_1);
+            }else if(this.track.id == 1){
+                this.clips.push(clip_2);
+            }
 
         },
         components: {

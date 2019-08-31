@@ -1,6 +1,8 @@
 <template>
     <div class="audioBoard">
-        <TimeControls />
+        <TimeControls v-bind:tracks="tracks"
+                      v-on:mute="mute(id)"
+        />
     </div>
 </template>
 
@@ -12,15 +14,33 @@
     export default {
         name: "AudioBoard",
         components: {
-            AudioTrack,
-            AudioControls,
             TimeControls
         },
         data() {
-
+            return {
+                tracks: [
+                    {
+                        id: 0,
+                        type: 'file',
+                        mute: false
+                    },
+                    {
+                        id: 1,
+                        type: 'file',
+                        mute: false
+                    },
+                    {
+                        id: 2,
+                        type: 'recording',
+                        mute: false
+                    }
+                ]
+            }
         },
         methods: {
-
+            mute(value){
+                alert(value);
+            }
         },
         mounted () {
 
