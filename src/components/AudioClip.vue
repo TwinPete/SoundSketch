@@ -125,6 +125,7 @@
 
             console.log('dieser clip: ');
             console.log(r);
+            console.log('offsetLeft für diesen Clip:  ' + this.clip.offsetLeft);
             o.startPos = (this.clip.offsetLeft * 100);
 
             console.log('startPos for ' +o.id + ':' + o.startPos);

@@ -38,11 +38,14 @@
                     console.log('oldVal: ' + oldVal + ' and newVal: ' + newVal);
                     console.log('generate clip...')
 
+
+                    let clips = this.clips;
+
                     let recording = document.createElement('div');
                     recording.classList.add('recording');
                     recording.setAttribute('id', 'recording');
-                    let offsetLeft = this.currentMilliseconds/100 + 'px';
-                    recording.style.left = offsetLeft;
+                    let offsetLeft = this.currentMilliseconds/100;
+                    recording.style.left = offsetLeft + 'px';
                     let track = document.querySelector('#track_' + this.track.id);
                     track.append(recording);
 
@@ -77,7 +80,7 @@
                             })
                     }
 
-                    navigator.mediaDevice.getUserMedia(constraintObj)
+                    navigator.mediaDevices.getUserMedia(constraintObj)
                         .then(function(mediaStreamObj){
 
                             let mediaRecorder = new MediaRecorder(mediaStreamObj);
@@ -87,7 +90,7 @@
                             console.log(mediaRecorder.state);
 
 
-                            document.querySelector('record').addEventListener('click', (e)=>{
+                            document.querySelector('.record').addEventListener('click', function(e){
                                 mediaRecorder.stop();
                                 console.log(mediaRecorder.state);
                             });
@@ -95,9 +98,11 @@
                             mediaRecorder.ondataavailable = function(e){
                                 chunks.push(e.data);
                             }
-                            mediaRecorder.onstop = (e)=>{
+                            mediaRecorder.onstop = function(e){
                                 let blob = new Blob(chunks, { 'type': 'audio/mp3' });
                                 chunks = [];
+                                let audioURL = window.URL.createObjectURL(blob);
+
 
                                 let clip = {
                                     id: 'nuna',
@@ -111,11 +116,15 @@
                                     duration: 0,
                                     isDragged: false,
                                     offsetLeft: offsetLeft,
-                                    blob: blob
+                                    blob: audioURL
                                 }
 
 
-                                this.clips.push(clip);
+
+                                console.log(clips);
+                                clips.push(clip);
+                                recording.remove();
+                                console.log(clips);
                             }
 
                         })
@@ -129,32 +138,7 @@
         data () {
             return {
                 id: 'track_' + this.track.id,
-                clips: [
-                    // {
-                    //     id: 'nana',
-                    //     waveColor: '#5290db',
-                    //     progressColor: '#7eb5f1',
-                    //     backgroundColor: 'audioClipBlue',
-                    //     isPlaying: false,
-                    //     startPos: 0,
-                    //     endPos: 0,
-                    //     duration: 0,
-                    //     isDragged: false,
-                    //     offsetLeft: 100
-                    // },
-                    // {
-                    //     id: 'nene',
-                    //     waveColor: '#5290db',
-                    //     progressColor: '#7eb5f1',
-                    //     backgroundColor: 'audioClipBlue',
-                    //     isPlaying: false,
-                    //     startPos: 0,
-                    //     endPos: 0,
-                    //     duration: 0,
-                    //     isDragged: false,
-                    //     offsetLeft: 200
-                    // }
-                ]
+                clips: []
             }
         },
         methods: {
