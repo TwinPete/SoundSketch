@@ -5,9 +5,9 @@
                 <div class="play" @click="startWatch"><font-awesome-icon icon="play" /></div>
                 <div class="pause" @click="pauseWatch"><font-awesome-icon icon="pause" /></div>
                 <div class="restart"><font-awesome-icon icon="stop" /></div>
-                <div class="record"><font-awesome-icon icon="microphone" /></div>
+                <div class="record" @click="toggleRecording()"><font-awesome-icon icon="microphone" /></div>
                 <div class="led">
-                    <div class="light" v-bind:class="{lightOn: isRunning}"></div>
+                    <div class="light" v-bind:class="{lightOn: isRunning, isRecording: isRecording}" ></div>
                 </div>
             </div>
             <div class="display">
@@ -42,6 +42,8 @@
                         v-bind:currentSeconds="currentSeconds"
                         v-bind:isRunning="isRunning"
                         v-bind:isDragging="isDragging"
+                        v-bind:isRecording="isRecording"
+                        v-on:select-track="$emit('select-track', track.id)"
                 />
             </div>
         </div>
@@ -67,7 +69,8 @@
                 currentMilliseconds: 0,
                 currentSeconds: 0,
                 watch: '00:00:00:00',
-                is: []
+                is: [],
+                isRecording: false
 
             }
 
@@ -160,7 +163,15 @@
                 this.watch = this.msToTime(this.currentMilliseconds);
                 // console.log(this.watch);
             },
-
+            toggleRecording(){
+                if(!this.isRecording){
+                    this.isRecording = true;
+                    this.startWatch();
+                }else{
+                    this.pauseWatch();
+                    this.isRecording = false;
+                }
+            }
         },
     }
 </script>
@@ -200,6 +211,10 @@
         font-size: 2rem;
         color: #b8b8b8;
         cursor: pointer;
+    }
+
+    .isRecording{
+        background-color: #f60243!important;
     }
 
     .led{

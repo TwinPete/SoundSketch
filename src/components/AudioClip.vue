@@ -26,11 +26,11 @@
                 console.log('new Val: ' + newVal + ' old Val: ' + oldVal);
             },
             currentMilliseconds: function(newVal, oldVal){
-                console.log('endPos' + this.clip.endPos);
-                console.log('this clip: current position: ' + this.clip.offsetLeft);
-                console.log('Prop changed in clip ' + this.clip.id + ': ', newVal/1000, ' | was: ', oldVal/1000);
+                // console.log('endPos' + this.clip.endPos);
+                // console.log('this clip: current position: ' + this.clip.offsetLeft);
+                // console.log('Prop changed in clip ' + this.clip.id + ': ', newVal/1000, ' | was: ', oldVal/1000);
                 if(!this.clip.isPlaying){
-                    console.log('startPos' + this.clip.startPos);
+                    // console.log('startPos' + this.clip.startPos);
                     if(this.isRunning && newVal >= this.clip.startPos){
                         console.log('heureka! ');
                         this.clip.isPlaying = true;
@@ -90,6 +90,15 @@
             console.log('ready');
         },
         mounted () {
+
+
+            if(this.type == 'file'){
+                console.log();
+            }else if(this.type == 'recording'){
+                console.log();
+            }
+
+
             this.wavesurfer = WaveSurfer.create({
                 container: '.' + this.clip.id,
                 height: 70,
@@ -100,50 +109,17 @@
                 fillParent: false
             });
 
-
-
-            if(this.clip.id == 'nana'){
-                this.wavesurfer.load("https://upload.wikimedia.org/wikipedia/commons/b/b5/Dub_Beat.ogg")
+            if(this.clip.type == 'file'){
+                this.wavesurfer.load(this.clip.path)
             }
-            if(this.clip.id == 'nena'){
-                this.wavesurfer.load("https://upload.wikimedia.org/wikipedia/commons/0/06/Summertime.ogg")
+            if(this.clip.type == 'recording'){
+                this.wavesurfer.load(this.clip.blob)
             }
 
             console.log(this.wavesurfer);
 
             let o = this.clip;
             let r = document.querySelector("." + o.id);
-
-            if (typeof(r) != 'undefined' && r != null)
-            {
-                // alert(o.id + ' exists');
-                // let e = this.clip.offsetLeft;
-                // alert(e);
-                // let s = window.getComputedStyle(r).getPropertyValue('width');
-                // alert(s);
-            }
-
-
-            // setTimeout(function(){
-            //     let r = document.querySelector("." + o.id);
-            //     console.log('dieser clip: ');
-            //     console.log(r);
-            //     o.startPos = (r.offsetLeft * 100);
-            //
-            //     console.log('startPos for ' +o.id + ':' + o.startPos);
-            //
-            //     o.endPos = ((r.offsetLeft + r.offsetWidth) * 100);
-            //     console.log('endPos: ' + o.endPos);
-            // },9000);
-
-            // setTimeout(function(){
-            //     let r = document.querySelector("." + o.id);
-            //     console.log('dieser clip: ');
-            //     let compStyle = window.getComputedStyle(r);
-            //     let left = compStyle.getPropertyValue('left');
-            //     console.log('dieser clip: ' + o.id + ' Left: ' + left);
-            //
-            // },9000);
 
 
 
@@ -161,19 +137,6 @@
                 console.log('endPos: ' + o.endPos);
             }, 1000);
 
-            // var p1 = new Promise(
-            //     // Resolver-Funktion kann den Promise sowohl auflösen als auch verwerfen
-            //     // reject the promise
-            //     function(resolve, reject) {
-            //
-            //         this.wavesurfer.on('waveform-ready', function () {
-            //             resolve('hello Promise');
-            //         });
-            //     });
-            //
-            // p1.then(function(val){
-            //     alert(val);
-            // });
 
         },
         updated (){
@@ -188,7 +151,7 @@
         position: absolute;
         width: auto;
         height: calc(100% - 2px);
-        border-radius: 10px;
+        border-radius: 15px;
         /*left: 100px;*/
         overflow: hidden;
     }
@@ -196,7 +159,7 @@
     .waveform{
         width: auto;
         height: 100%;
-        border-radius: 10px;
+        border-radius: 15px;
     }
 
     .overlay{
@@ -237,6 +200,11 @@
     .audioClipRed{
         background-color: #a0302c;
         border: solid 1px #952d29;
+    }
+
+    .audioClipPink{
+        background-color: #a02f62;
+        border: solid 1px #8f2a58;
     }
 
 </style>
