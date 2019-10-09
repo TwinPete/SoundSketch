@@ -1,12 +1,13 @@
 <template>
     <div class="audioClip"
-         @click="startDrag()"
+
          v-bind:style="{ left: clip.offsetLeft + 'px' }"
+         @click="click()"
     >
         <div class="waveform" v-bind:class="[clip.backgroundColor, clip.id]"></div>
         <div class="overlay"></div>
         <div class="resizeLeft"></div>
-        <div class="resizeRight" @mousedown="startResize()" @mouseup="stopResize()"></div>
+        <div class="resizeRight" @mousedown="$emit('startCroppingRight', clip.id)" @mouseup="$emit('stopCroppingRight', clip.id)"></div>
     </div>
 </template>
 
@@ -18,7 +19,8 @@
         props: ['clip', 'currentMilliseconds', 'currentSeconds', 'isRunning', 'isDragging'],
         data () {
             return {
-                onResize: false
+                onResize: false,
+                endPos: this.cropRight
             }
         },
         watch: {
@@ -26,7 +28,8 @@
                 console.log('new Val: ' + newVal + ' old Val: ' + oldVal);
             },
             currentMilliseconds: function(newVal, oldVal){
-                // console.log('endPos' + this.clip.endPos);
+                let endPos = ((this.clip.endPos - this.clip.startPos)/1000);
+                console.log('endPos ' + endPos);
                 // console.log('this clip: current position: ' + this.clip.offsetLeft);
                 // console.log('Prop changed in clip ' + this.clip.id + ': ', newVal/1000, ' | was: ', oldVal/1000);
                 if(!this.clip.isPlaying){
@@ -35,7 +38,8 @@
                         console.log('heureka! ');
                         this.clip.isPlaying = true;
                         // alert((newVal/1000) - (this.clip.offsetLeft/10) );
-                        this.wavesurfer.play((newVal/1000) - (this.clip.offsetLeft/10), (this.clip.endPos/100));
+                        let startPos = (newVal/1000) - (this.clip.offsetLeft/10);
+                        this.wavesurfer.play(startPos, endPos);
                     }
                 }
 
@@ -62,11 +66,15 @@
             startDrag(){
                 alert('drag');
             },
-            startResize(){
+            startCroppingRight(){
                 this.onResize = true;
             },
-            stopResize(){
+            stopCroppingRight(){
                 this.onResize = false;
+            },
+            click(){
+                console.log('this clip');
+                console.log(this.clip);
             },
             resizeRight(event){
                 if(this.onResize){
@@ -128,14 +136,24 @@
             console.log('offsetLeft für diesen Clip:  ' + this.clip.offsetLeft);
             o.startPos = (this.clip.offsetLeft * 100);
 
-            console.log('startPos for ' +o.id + ':' + o.startPos);
+            console.log('startPos for ' +o.id + ':');
+            console.log(o.startPos);
 
             setTimeout(function(){
                 let compStyle = window.getComputedStyle(r);
                 let width = compStyle.getPropertyValue('width').match(/\d+/);
-                o.endPos = (o.startPos * 100) + (width * 100);
+                console.log('die width dieses clips ist: '+ width);
+                console.log('die duration dieses CLips ist ');
+                console.log(width*100);
+
+                let sum = o.startPos + (width*100);
+                console.log(sum);
+                o.endPos = sum;
+                sum = sum - o.startPos;
+                o.duration = sum;
                 console.log('offset width of element: ' + (width));
                 console.log('endPos: ' + o.endPos);
+                console.log('duration: ' + o.duration);
             }, 1000);
 
 
@@ -204,8 +222,8 @@
     }
 
     .audioClipPink{
-        background-color: #a02f62;
-        border: solid 1px #8f2a58;
+        background-color: #a09e2c;
+        border: solid 1px #878525;
     }
 
 </style>

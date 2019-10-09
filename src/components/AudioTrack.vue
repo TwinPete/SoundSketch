@@ -1,6 +1,10 @@
 <template>
     <div class="audioTrack"
+
+         
         @click="$emit('select-track', track.id)"
+         @mousemove="getCursorMovement"
+         @mouseup="stopCroppingRight"
          v-bind:class="{ trackSelected: track.selected}"
          v-bind:id="id"
     >
@@ -11,6 +15,8 @@
                 v-bind:currentSeconds="currentSeconds"
                 v-bind:isRunning="isRunning"
                 v-bind:isDragging="isDragging"
+                v-on:startCroppingRight="startCroppingRight"
+
         />
     </div>
 </template>
@@ -107,8 +113,9 @@
                                 let clip = {
                                     id: 'nuna',
                                     type: 'recording',
-                                    waveColor: '#db2567',
-                                    progressColor: '#f18dd5',
+                                    blob: audioURL,
+                                    waveColor: '#cfdb4f',
+                                    progressColor: '#def191',
                                     backgroundColor: 'audioClipPink',
                                     isPlaying: false,
                                     startPos: 0,
@@ -116,7 +123,8 @@
                                     duration: 0,
                                     isDragged: false,
                                     offsetLeft: offsetLeft,
-                                    blob: audioURL
+                                    cropLeft: 0,
+                                    cropRight: 0
                                 }
 
 
@@ -138,10 +146,68 @@
         data () {
             return {
                 id: 'track_' + this.track.id,
-                clips: []
+                clips: [],
+                croppingClipId: '',
+                croppingLeft: false,
+                croppingRight: false
             }
         },
         methods: {
+            startCroppingRight(clipId){
+                console.log('is cropping...');
+                console.log(clipId);
+                this.croppingRight = true;
+                this.croppingClipId = clipId;
+            },
+            stopCroppingRight(clipId){
+
+                this.croppingRight = false;
+                this.croppingClipId = '';
+            },
+            getCursorMovement(){
+                if(this.croppingRight){
+                    let currentPos = (event.clientX - 422);
+                    console.log(currentPos);
+
+                    console.log(this.croppingClipId);
+                    let c = this.clips.filter( clip => clip.id == this.croppingClipId);
+                    let clip = c[0];
+
+                    let duration = clip.duration/100;
+                    console.log('duration ist: '+ duration);
+                    let offsetLeft = clip.offsetLeft;
+                    console.log('offsetLeft' + offsetLeft);
+                    clip.cropRight = (duration - (currentPos - offsetLeft));
+                    console.log('cropRight ist: ' + clip.cropRight);
+
+                    if(currentPos > (duration + offsetLeft)){
+                        this.croppingRight = false;
+                    }
+
+                    let cropRight = clip.cropRight * 100;
+                    console.log('cropRight in ms');
+                    console.log(cropRight);
+
+                    let i = (duration*100) + clip.startPos;
+                    console.log('ganze duration');
+                    console.log(i);
+
+                    console.log('startPos');
+                    console.log(clip.startPos);
+                    clip.endPos = i - cropRight;
+                    console.log('new End Pos: ');
+                    console.log(clip.endPos);
+
+                    console.log(clip);
+
+                    let wave = document.querySelectorAll('.' + this.croppingClipId)[0].firstChild;
+
+                    wave.style.width = (duration - clip.cropRight) + 'px';
+
+
+
+                }
+            }
 
         },
         mounted() {
@@ -157,7 +223,9 @@
                 endPos: 0,
                 duration: 0,
                 isDragged: false,
-                offsetLeft: 100
+                offsetLeft: 100,
+                cropLeft: 0,
+                cropRight: 0
             }
             let clip_2 = {
                 id: 'nena',
@@ -171,7 +239,9 @@
                 endPos: 0,
                 duration: 0,
                 isDragged: false,
-                offsetLeft: 200
+                offsetLeft: 200,
+                cropLeft: 0,
+                cropRight: 0
             }
 
             console.log(this.track);
@@ -195,6 +265,7 @@
     min-width: 100%;
     height: 69px;
     border-bottom: solid 1px #3d3d3d;
+
 }
 .trackSelected{
     background-color: #4d4e50;
@@ -202,7 +273,7 @@
 .recording{
     position: absolute;
     width: auto;
-    background-color: #c93163;
+    background-color: #a09e2c;
     height: 100%;
     border-radius: 15px;
 }
