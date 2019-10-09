@@ -4,7 +4,8 @@
          
         @click="$emit('select-track', track.id)"
          @mousemove="getCursorMovement"
-         @mouseup="stopCroppingRight"
+
+         v-on:keydown="cut()"
          v-bind:class="{ trackSelected: track.selected}"
          v-bind:id="id"
     >
@@ -16,6 +17,8 @@
                 v-bind:isRunning="isRunning"
                 v-bind:isDragging="isDragging"
                 v-on:startCroppingRight="startCroppingRight"
+                v-on:startCroppingLeft="startCroppingLeft"
+                v-on:stopCropping="stopCropping"
 
         />
     </div>
@@ -154,15 +157,30 @@
         },
         methods: {
             startCroppingRight(clipId){
-                console.log('is cropping...');
+                console.log('is cropping RIght...');
                 console.log(clipId);
                 this.croppingRight = true;
                 this.croppingClipId = clipId;
             },
-            stopCroppingRight(clipId){
-
+            startCroppingLeft(clipId){
+                console.log('is cropping Left...');
+                console.log(clipId);
+                this.croppingLeft = true;
+                this.croppingClipId = clipId;
+            },
+            stopCropping(clipId){
+                // alert(clipId);
                 this.croppingRight = false;
+                this.croppingLeft = false;
                 this.croppingClipId = '';
+
+                let c = this.clips.filter( clip => clip.id == clipId);
+                let clip = c[0];
+                console.log(clip);
+
+                clip.startPos = (clip.offsetLeft*100) + (clip.cropLeft);
+                console.log('new startPos: ' + clip.startPos);
+
             },
             getCursorMovement(){
                 if(this.croppingRight){
@@ -207,6 +225,38 @@
 
 
                 }
+                if(this.croppingLeft){
+
+                    let currentPos = (event.clientX - 422);
+                    console.log(currentPos);
+
+                    console.log(this.croppingClipId);
+                    let c = this.clips.filter( clip => clip.id == this.croppingClipId);
+                    let clip = c[0];
+
+                    let startPos = clip.startPos/100;
+                    if(currentPos <= clip.offsetLeft){
+                        console.log('darunter');
+                        clip.startPos = clip.offsetLeft*100;
+                        this.croppingLeft = false;
+
+                    }
+
+                    let element = document.querySelectorAll('.' + this.croppingClipId)[0];
+                    // console.log(element);
+                    console.log(element.parentElement);
+
+                    let cropLeft = currentPos - clip.offsetLeft
+                    clip.cropLeft = cropLeft * 100;
+
+                    // clip.startPos = (clip.offsetLeft*100) + (clip.cropLeft*100);
+
+                    element.style.marginLeft = -cropLeft + 'px';
+                    element.parentElement.style.left = (clip.offsetLeft + cropLeft) + 'px';
+                }
+            },
+            cut(){
+                alert('cut');
             }
 
         },

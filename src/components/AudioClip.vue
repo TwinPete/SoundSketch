@@ -2,12 +2,11 @@
     <div class="audioClip"
 
          v-bind:style="{ left: clip.offsetLeft + 'px' }"
-         @click="click()"
     >
         <div class="waveform" v-bind:class="[clip.backgroundColor, clip.id]"></div>
         <div class="overlay"></div>
-        <div class="resizeLeft"></div>
-        <div class="resizeRight" @mousedown="$emit('startCroppingRight', clip.id)" @mouseup="$emit('stopCroppingRight', clip.id)"></div>
+        <div class="resizeLeft" @mousedown="$emit('startCroppingLeft', clip.id)" @mouseup="$emit('stopCropping', clip.id)"></div>
+        <div class="resizeRight" @mousedown="$emit('startCroppingRight', clip.id)" @mouseup="$emit('stopCropping', clip.id)"></div>
     </div>
 </template>
 
@@ -25,11 +24,14 @@
         },
         watch: {
             endPos: function(newVal, oldVal){
-                console.log('new Val: ' + newVal + ' old Val: ' + oldVal);
+                // console.log('new Val: ' + newVal + ' old Val: ' + oldVal);
+            },
+            cropLeft: function(newVal, oldVal){
+                alert('gdgs');
             },
             currentMilliseconds: function(newVal, oldVal){
                 let endPos = ((this.clip.endPos - this.clip.startPos)/1000);
-                console.log('endPos ' + endPos);
+                // console.log('endPos ' + endPos);
                 // console.log('this clip: current position: ' + this.clip.offsetLeft);
                 // console.log('Prop changed in clip ' + this.clip.id + ': ', newVal/1000, ' | was: ', oldVal/1000);
                 if(!this.clip.isPlaying){
@@ -38,7 +40,20 @@
                         console.log('heureka! ');
                         this.clip.isPlaying = true;
                         // alert((newVal/1000) - (this.clip.offsetLeft/10) );
+                        console.log('startPos');
+                        let start = this.clip.startPos;
+                        console.log(start);
+                        console.log('this offsetLeft');
+                        let offset = this.clip.offsetLeft*100;
+                        console.log(offset);
+                        console.log('this ne val and current time status');
+                        console.log(newVal);
+                        let difference = (start - offset)/1000;
+                        console.log('la difference ');
+                        console.log(difference);
                         let startPos = (newVal/1000) - (this.clip.offsetLeft/10);
+                        console.log(startPos);
+                        // startPos = ((newVal/1000) - (this.clip.offsetLeft/10)) + difference;
                         this.wavesurfer.play(startPos, endPos);
                     }
                 }
@@ -71,10 +86,6 @@
             },
             stopCroppingRight(){
                 this.onResize = false;
-            },
-            click(){
-                console.log('this clip');
-                console.log(this.clip);
             },
             resizeRight(event){
                 if(this.onResize){
